@@ -9,7 +9,6 @@ require (
 	github.com/lib/pq v1.10.9
 	github.com/rs/zerolog v1.34.0
 	github.com/spf13/viper v1.21.0
-	github.com/stretchr/testify v1.11.1
 	gopkg.in/DataDog/dd-trace-go.v1 v1.74.6
 )
 
@@ -74,7 +73,7 @@ require (
 	github.com/spf13/afero v1.15.0 // indirect
 	github.com/spf13/cast v1.10.0 // indirect
 	github.com/spf13/pflag v1.0.10 // indirect
-	github.com/stretchr/objx v0.5.2 // indirect
+	github.com/stretchr/testify v1.11.1 // indirect
 	github.com/subosito/gotenv v1.6.0 // indirect
 	github.com/tinylib/msgp v1.2.5 // indirect
 	github.com/tklauser/go-sysconf v0.3.15 // indirect
