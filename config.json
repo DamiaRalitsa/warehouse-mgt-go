@@ -1,0 +1,16 @@
+{
+    "debug": true,
+    "server": {
+        "host": "0.0.0.0",
+        "port": 8336,
+        "name": "warehouse-mgt-api",
+        "version": "1.0.0",
+        "description": "Warehouse Management API",
+        "env": "development"
+    },
+    "databasePostgres": {
+        "details": "postgres://postgres:password@postgres:5432/test?sslmode=disable&TimeZone=Asia/Jakarta",
+        "maxPool": 10,
+        "minPool": 1
+    }
+}
