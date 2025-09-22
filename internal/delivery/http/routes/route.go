@@ -68,7 +68,12 @@ func requireLogin(c *fiber.Ctx) error {
 	if identifier == "" {
 		return c.Status(401).JSON(fiber.Map{"error": "authentication required"})
 	}
-	// Optionally, validate user exists
+	userUsecase := http.NewUserController().Usecase
+	user, err := userUsecase.Login(identifier)
+	if err != nil {
+		return c.Status(401).JSON(fiber.Map{"error": "invalid user identifier"})
+	}
+	c.Locals("user", user)
 	return c.Next()
 }
 
