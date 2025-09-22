@@ -60,3 +60,17 @@ func (r *UserRepositoryImpl) List() ([]domain.User, error) {
 	}
 	return results, nil
 }
+
+func (r *UserRepositoryImpl) GetByPhoneOrEmail(identifier string) (*domain.User, error) {
+	var results []domain.User
+	query := `SELECT id, name, phone, email FROM users WHERE phone = $1 OR email = $1 LIMIT 1`
+	err := r.db(&results, false, query, identifier)
+	if err != nil {
+		log.Printf("Error retrieving user by phone/email: %v\n", err)
+		return nil, err
+	}
+	if len(results) == 0 {
+		return nil, fmt.Errorf("no user found with phone/email: %s", identifier)
+	}
+	return &results[0], nil
+}

@@ -63,6 +63,15 @@ func NewRouteConfig() *RouteConfig {
 	return &routeConfig
 }
 
+func requireLogin(c *fiber.Ctx) error {
+	identifier := c.Get("X-User-Identifier")
+	if identifier == "" {
+		return c.Status(401).JSON(fiber.Map{"error": "authentication required"})
+	}
+	// Optionally, validate user exists
+	return c.Next()
+}
+
 func (rc *RouteConfig) SetupRoute() {
 
 	// User Service
@@ -73,27 +82,27 @@ func (rc *RouteConfig) SetupRoute() {
 	userGroup.Get("/list", rc.UserController.List)
 
 	// Product Service
-	productGroup := rc.App.Group("/api/product")
+	productGroup := rc.App.Group("/api/product", requireLogin)
 	productGroup.Post("/create", rc.ProductController.Create)
 	productGroup.Get("/:id", rc.ProductController.GetByID)
 	productGroup.Get("/list", rc.ProductController.List) // List products with stock
 
 	// Order Service
-	orderGroup := rc.App.Group("/api/order")
+	orderGroup := rc.App.Group("/api/order", requireLogin)
 	orderGroup.Post("/checkout", rc.OrderController.Checkout)          // Place order, reserve stock
 	orderGroup.Post("/release-stock", rc.OrderController.ReleaseStock) // Release reserved stock
 	orderGroup.Get("/:id", rc.OrderController.GetByID)
 	orderGroup.Get("/list", rc.OrderController.List)
 
 	// Shop Service
-	shopGroup := rc.App.Group("/api/shop")
+	shopGroup := rc.App.Group("/api/shop", requireLogin)
 	shopGroup.Post("/create", rc.ShopController.Create)
 	shopGroup.Get("/:id", rc.ShopController.GetByID)
 	shopGroup.Get("/list", rc.ShopController.List)
 	shopGroup.Get("/:id/warehouses", rc.ShopController.ListWarehouses) // List warehouses for shop
 
 	// Warehouse Service
-	warehouseGroup := rc.App.Group("/api/warehouse")
+	warehouseGroup := rc.App.Group("/api/warehouse", requireLogin)
 	warehouseGroup.Post("/create", rc.WarehouseController.Create)
 	warehouseGroup.Get("/:id", rc.WarehouseController.GetByID)
 	warehouseGroup.Get("/list", rc.WarehouseController.List)
