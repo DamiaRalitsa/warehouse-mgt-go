@@ -108,6 +108,28 @@ pkg/postgres/connection.go
 - `POST /api/warehouse/:id/activate` - Activate warehouse
 - `POST /api/warehouse/:id/deactivate` - Deactivate warehouse
 
+## Authentication & Protected Endpoints
+
+All endpoints except user registration and login require authentication using the `X-User-Identifier` header. This header must contain a registered user's phone number or email.
+
+**Login Flow:**
+1. Register a user via `POST /api/user/register` (provide phone or email).
+2. Login via `POST /api/user/login` with `{ "identifier": "08123456789" }` (or email).
+3. For all protected endpoints, include the header:
+   ```
+   X-User-Identifier: 08123456789
+   ```
+   (or the registered email)
+
+If the identifier is not registered, access will be denied.
+
+**Example Postman Call:**
+```
+GET http://localhost:8334/api/product/list
+Headers:
+  X-User-Identifier: 08123456789
+```
+
 ## Contributing
 Pull requests are welcome! For major changes, please open an issue first to discuss what you would like to change.
 
