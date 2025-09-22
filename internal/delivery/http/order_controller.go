@@ -57,4 +57,25 @@ func (oc *OrderController) List(c *fiber.Ctx) error {
 		Success:    true,
 		Data:       orders,
 	})
+
+}
+
+// Checkout endpoint: place order and reserve stock
+func (oc *OrderController) Checkout(c *fiber.Ctx) error {
+	// TODO: implement checkout and stock reservation logic
+	return c.Status(200).JSON(presenters.Response{
+		StatusCode: 200,
+		Message:    "checkout successful (stub)",
+		Success:    true,
+	})
+}
+
+// ReleaseStock endpoint: release reserved stock if payment not made
+func (oc *OrderController) ReleaseStock(c *fiber.Ctx) error {
+	// TODO: implement release stock logic
+	return c.Status(200).JSON(presenters.Response{
+		StatusCode: 200,
+		Message:    "stock released (stub)",
+		Success:    true,
+	})
 }

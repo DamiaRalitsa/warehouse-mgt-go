@@ -5,6 +5,7 @@ import (
 	"edot/pkg/postgres"
 	"fmt"
 	"log"
+	"time"
 )
 
 type OrderRepositoryImpl struct {
@@ -51,6 +52,41 @@ func (r *OrderRepositoryImpl) List() ([]domain.Order, error) {
 	err := r.db(&results, false, query)
 	if err != nil {
 		log.Printf("Error retrieving orders: %v\n", err)
+		return []domain.Order{}, err
+	}
+	if results == nil {
+		results = []domain.Order{}
+	}
+	return results, nil
+}
+
+func (r *OrderRepositoryImpl) ReserveStock(productID int64, quantity int) error {
+	query := `UPDATE products SET reserved = reserved + $1, stock = stock - $1 WHERE id = $2 AND stock >= $1`
+	err := r.db(nil, true, query, quantity, productID)
+	if err != nil {
+		log.Printf("Error reserving stock: %v\n", err)
+		return err
+	}
+	return nil
+}
+
+func (r *OrderRepositoryImpl) ReleaseStock(productID int64, quantity int) error {
+	query := `UPDATE products SET reserved = reserved - $1, stock = stock + $1 WHERE id = $2 AND reserved >= $1`
+	err := r.db(nil, true, query, quantity, productID)
+	if err != nil {
+		log.Printf("Error releasing stock: %v\n", err)
+		return err
+	}
+	return nil
+}
+
+func (r *OrderRepositoryImpl) ListExpiredUnpaidOrders(expirySeconds int64) ([]domain.Order, error) {
+	var results []domain.Order
+	now := time.Now().Unix()
+	query := `SELECT id, user_id, product_id, shop_id, reserved_at, paid FROM orders WHERE paid = false AND reserved_at > 0 AND reserved_at < $1`
+	err := r.db(&results, false, query, now-expirySeconds)
+	if err != nil {
+		log.Printf("Error retrieving expired unpaid orders: %v\n", err)
 		return []domain.Order{}, err
 	}
 	if results == nil {

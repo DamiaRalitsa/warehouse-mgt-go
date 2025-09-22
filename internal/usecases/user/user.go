@@ -51,5 +51,22 @@ func (uc *UserUsecase) validateUser(u *domain.User) error {
 		return fmt.Errorf("user name cannot be empty")
 	}
 	u.Name = name
+	// Validate phone or email
+	if strings.TrimSpace(u.Phone) == "" && strings.TrimSpace(u.Email) == "" {
+		return fmt.Errorf("either phone or email must be provided")
+	}
 	return nil
+}
+
+// Login authenticates a user by phone or email
+func (uc *UserUsecase) Login(identifier string) (*domain.User, error) {
+	if strings.TrimSpace(identifier) == "" {
+		return nil, fmt.Errorf("identifier (phone/email) required")
+	}
+	// Try phone first
+	user, err := uc.Repo.GetByPhoneOrEmail(identifier)
+	if err != nil {
+		return nil, err
+	}
+	return user, nil
 }

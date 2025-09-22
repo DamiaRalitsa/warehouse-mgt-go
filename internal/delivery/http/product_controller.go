@@ -3,15 +3,20 @@ package http
 import (
 	"edot/internal/domain"
 	"edot/internal/presenters"
+	"edot/internal/usecases/product"
 	"strconv"
 
 	"github.com/gofiber/fiber/v2"
 )
 
-type ProductController struct{}
+type ProductController struct {
+	Usecase *product.ProductUsecase
+}
 
 func NewProductController() *ProductController {
-	return &ProductController{}
+	return &ProductController{
+		Usecase: product.NewProductUsecase(),
+	}
 }
 
 func (pc *ProductController) Create(c *fiber.Ctx) error {
@@ -50,7 +55,15 @@ func (pc *ProductController) GetByID(c *fiber.Ctx) error {
 }
 
 func (pc *ProductController) List(c *fiber.Ctx) error {
-	products := []domain.Product{{ID: 1, Name: "Product 1"}}
+	products, err := pc.Usecase.GetAll()
+	if err != nil {
+		return c.Status(500).JSON(presenters.Response{
+			StatusCode: 500,
+			Message:    "failed to fetch products",
+			Success:    false,
+			Error:      err.Error(),
+		})
+	}
 	return c.Status(200).JSON(presenters.Response{
 		StatusCode: 200,
 		Message:    "success",

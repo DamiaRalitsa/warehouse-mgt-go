@@ -10,10 +10,12 @@ import (
 
 type UserController struct {
 	// Add usecase dependency here
+
 }
 
 func NewUserController() *UserController {
 	return &UserController{}
+
 }
 
 func (uc *UserController) Create(c *fiber.Ctx) error {
@@ -61,5 +63,16 @@ func (uc *UserController) List(c *fiber.Ctx) error {
 		Message:    "success",
 		Success:    true,
 		Data:       users,
+	})
+
+}
+
+// Login endpoint: authenticate user by phone or email
+func (uc *UserController) Login(c *fiber.Ctx) error {
+	// TODO: implement authentication logic
+	return c.Status(200).JSON(presenters.Response{
+		StatusCode: 200,
+		Message:    "login successful (stub)",
+		Success:    true,
 	})
 }

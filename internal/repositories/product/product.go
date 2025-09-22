@@ -47,7 +47,7 @@ func (r *ProductRepositoryImpl) GetByID(id int64) (*domain.Product, error) {
 
 func (r *ProductRepositoryImpl) List() ([]domain.Product, error) {
 	var results []domain.Product
-	query := `SELECT id, name FROM products ORDER BY name ASC`
+	query := `SELECT id, name, stock, reserved FROM products ORDER BY name ASC`
 	err := r.db(&results, false, query)
 	if err != nil {
 		log.Printf("Error retrieving products: %v\n", err)

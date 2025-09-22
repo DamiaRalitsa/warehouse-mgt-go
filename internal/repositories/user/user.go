@@ -49,7 +49,7 @@ func (r *UserRepositoryImpl) GetByID(id int64) (*domain.User, error) {
 
 func (r *UserRepositoryImpl) List() ([]domain.User, error) {
 	var results []domain.User
-	query := `SELECT id, name FROM users ORDER BY name ASC`
+	query := `SELECT id, name, phone, email FROM users ORDER BY name ASC`
 	err := r.db(&results, false, query)
 	if err != nil {
 		log.Printf("Error retrieving users: %v\n", err)

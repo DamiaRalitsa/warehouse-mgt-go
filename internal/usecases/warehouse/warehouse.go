@@ -9,7 +9,7 @@ import (
 )
 
 type WarehouseUsecase struct {
-	Repo domain.WarehouseRepository
+	Repo *warehouse.WarehouseRepositoryImpl
 }
 
 func NewWarehouseUsecase() *WarehouseUsecase {
@@ -52,4 +52,16 @@ func (uc *WarehouseUsecase) validateWarehouse(w *domain.Warehouse) error {
 	}
 	w.Name = name
 	return nil
+}
+
+func (uc *WarehouseUsecase) ListByShopID(shopID int64) ([]domain.Warehouse, error) {
+	return uc.Repo.ListByShopID(shopID)
+}
+
+func (uc *WarehouseUsecase) TransferProduct(productID int64, fromWarehouseID int64, toWarehouseID int64, quantity int) error {
+	return uc.Repo.TransferProduct(productID, fromWarehouseID, toWarehouseID, quantity)
+}
+
+func (uc *WarehouseUsecase) SetActiveStatus(warehouseID int64, active bool) error {
+	return uc.Repo.SetActiveStatus(warehouseID, active)
 }
